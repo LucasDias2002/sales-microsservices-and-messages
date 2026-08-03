@@ -1,0 +1,13 @@
+<Solution>
+  <Folder Name="/Integration/">
+    <Project Path="Sales.MessageBus/Sales.MessageBus.csproj" />
+  </Folder>
+  <Folder Name="/Services/">
+    <Project Path="PaymentService/Sales.PaymentService.csproj" Id="c8719d94-a1ba-4624-a69b-822a9f978ea6" />
+    <Project Path="Sales.InventoryService/Sales.InventoryService.csproj" Id="5fb9d253-98d6-4e8a-86e0-5053bfa59463" />
+    <Project Path="Sales.OrderService/Sales.OrderService.csproj" Id="21cd1fa9-4b80-41c4-a703-2de4fe53fbfc" />
+  </Folder>
+  <Folder Name="/Solution Items/">
+    <File Path="docker-compose.yml" />
+  </Folder>
+</Solution>

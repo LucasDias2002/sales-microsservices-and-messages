@@ -1,0 +1,46 @@
+name: sales-platform
+
+services: 
+    rabbitmq:
+        image: rabbitmq:3-management
+        container_name: rabbitmq
+        ports:
+            - "5672:5672"
+            - "15672:15672"
+
+    sqlserver-1:
+      image: mcr.microsoft.com/mssql/server:2025-latest
+      container_name: order-db
+      environment:
+        SA_PASSWORD: "sua-senha"
+        ACCEPT_EULA: "Y"
+      ports:
+        - "1434:1433"
+      volumes:
+        - order_data:/var/opt/mssql
+
+    sqlserver-2:
+      image: mcr.microsoft.com/mssql/server:2025-latest
+      container_name: inventory-db
+      environment:
+        SA_PASSWORD: "sua-senha"
+        ACCEPT_EULA: "Y"
+      ports:
+        - "1435:1433"
+      volumes:
+        - inventory_data:/var/opt/mssql
+
+    sqlserver-3:
+      image: mcr.microsoft.com/mssql/server:2025-latest
+      container_name: payment-db
+      environment:
+        SA_PASSWORD: "sua-senha"
+        ACCEPT_EULA: "Y"
+      ports:
+        - "1436:1433"
+      volumes:
+        - payment_data:/var/opt/mssql
+volumes:
+  order_data:
+  inventory_data:
+  payment_data:
