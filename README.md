@@ -4,6 +4,14 @@ Sistema de vendas desenvolvido com **C# e .NET**, utilizando uma arquitetura bas
 
 O projeto foi desenvolvido com o objetivo de aplicar na prática conceitos de **arquitetura de microsserviços, mensageria e processamento assíncrono**, explorando a comunicação entre diferentes serviços e o gerenciamento de uma transação distribuída utilizando o padrão **Saga Orchestrated**.
 
+Tecnologias: 
+<p align="left">
+  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/csharp/csharp-original.svg" width="40" height="40" alt="C#" />
+  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/dotnetcore/dotnetcore-original.svg" width="40" height="40" alt=".NET" />
+  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/docker/docker-original.svg" width="40" height="40" alt="Docker" />
+  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/rabbitmq/rabbitmq-original.svg" width="40" height="40" alt="RabbitMQ" />
+</p>
+
 ---
 
 ## 🏗️ Arquitetura
