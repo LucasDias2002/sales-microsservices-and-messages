@@ -152,7 +152,7 @@ O fluxo detalhado do processamento de um pedido será apresentado nesta seção,
 
 ## 🐳 Executando o projeto
 
-1. Subindo a infraestrutura
+### 1. Subindo a infraestrutura
 
 Na raiz do projeto, execute:
 
@@ -173,7 +173,7 @@ Para verificar se os containers estão executando:
 docker compose ps
 ```
 
-2. Executando os microsserviços
+### 2. Executando os microsserviços
 
 Abra um terminal para cada microsserviço e execute dotnet run.
 
@@ -198,7 +198,7 @@ dotnet run
 
 Cada microsserviço será executado localmente através do ASP.NET Core.
 
-3. Configuração das conexões
+### 3. Configuração das conexões
 
 Como os microsserviços são executados diretamente na máquina, as conexões devem utilizar localhost.
 
@@ -220,7 +220,7 @@ Para o RabbitMQ:
 localhost:5672
 ```
 
-4. RabbitMQ Management
+### 4. RabbitMQ Management
 
 A interface de gerenciamento do RabbitMQ estará disponível em:
 
@@ -230,7 +230,8 @@ Credenciais padrão:
 
 Usuário: guest
 Senha: guest
-5. Parando a infraestrutura
+
+### 5. Parando a infraestrutura
 
 Para parar os containers:
 
