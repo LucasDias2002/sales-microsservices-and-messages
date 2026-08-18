@@ -152,7 +152,93 @@ O fluxo detalhado do processamento de um pedido será apresentado nesta seção,
 
 ## 🐳 Executando o projeto
 
-> 🚧 **Em construção**
+1. Subindo a infraestrutura
+
+Na raiz do projeto, execute:
+
+```text
+docker compose up -d
+```
+
+Isso irá iniciar os serviços de infraestrutura necessários:
+
+RabbitMQ
+SQL Server do OrderService
+SQL Server do InventoryService
+SQL Server do PaymentService
+
+Para verificar se os containers estão executando:
+
+```text
+docker compose ps
+```
+
+2. Executando os microsserviços
+
+Abra um terminal para cada microsserviço e execute dotnet run.
+
+OrderService:
+
+```text
+cd OrderService
+dotnet run
+```
+InventoryService:
+
+```text
+cd InventoryService
+dotnet run
+```
+PaymentService:
+
+```text
+cd PaymentService
+dotnet run
+```
+
+Cada microsserviço será executado localmente através do ASP.NET Core.
+
+3. Configuração das conexões
+
+Como os microsserviços são executados diretamente na máquina, as conexões devem utilizar localhost.
+
+|Serviço         |	Banco        |	Porta |
+| ---------------|---------------|------ |
+|**OrderService**    |	order-db     |	1434  |
+|**InventoryService**|	inventory-db | 1435  |
+|**PaymentService**  |	payment-db   |	1436  |
+|**RabbitMQ**        |	rabbitmq	   | 5672  |
+
+Exemplo de conexão do OrderService:
+
+```text
+Server=localhost,1434;Database=OrderDb;User Id=sa;Password=sua-senha;TrustServerCertificate=True;Encrypt=False
+```
+
+Para o RabbitMQ:
+```text
+localhost:5672
+```
+
+4. RabbitMQ Management
+
+A interface de gerenciamento do RabbitMQ estará disponível em:
+
+http://localhost:15672
+
+Credenciais padrão:
+
+Usuário: guest
+Senha: guest
+5. Parando a infraestrutura
+
+Para parar os containers:
+
+```text
+docker compose down
+```
+
+Os dados dos bancos são mantidos nos volumes Docker definidos no docker-compose.yml.
 
 ---
 
