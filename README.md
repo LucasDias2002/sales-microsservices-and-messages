@@ -18,6 +18,8 @@ Tecnologias:
 
 O sistema é composto por três microsserviços:
 
+![Arquitetura](Docs/images/arquitetura-projeto.png)
+
 * **Order Service** — Responsável pelo gerenciamento dos pedidos.
 * **Inventory Service** — Responsável pelo gerenciamento e reserva de estoque.
 * **Payment Service** — Responsável pelo processamento dos pagamentos.
@@ -45,6 +47,18 @@ EcommerceEvents
 ```
 
 O sistema possui **mais de 7 filas**, utilizadas para distribuir os eventos entre os serviços de acordo com as diferentes etapas do processamento do pedido.
+
+### Filas do projeto:
+
+|                 RABBITMQ QUEUES              |
+| -------------------------------------------- |
+| inventory_order_created_queue                |
+| inventory_payment_processed_queue            |
+| order_payment_processed_queue                |
+| order_stock_not_reservation_queue            |
+| order_stock_reserved_queue                   |
+| payment_stock_released_queue                 |
+| payment_stock_reserved_queue                 |
 
 A utilização de mensageria permite que os serviços se comuniquem de forma desacoplada, evitando que todo o fluxo dependa exclusivamente de chamadas HTTP síncronas.
 
@@ -141,31 +155,14 @@ A separação dos bancos permite que cada serviço mantenha autonomia sobre seus
 
 ---
 
-## 🔀 Fluxo do processamento
-
-> 🚧 **Em construção**
-
-O fluxo detalhado do processamento de um pedido será apresentado nesta seção, incluindo:
-
-1. Criação do pedido
-2. Comunicação com o Inventory Service
-3. Reserva do estoque
-4. Comunicação com o Payment Service
-5. Processamento do pagamento
-6. Atualização do status do pedido
-7. Tratamento de falhas
-8. Operações de compensação da Saga
-
----
-
 ## 🐳 Executando o projeto
 
-### 1. Subindo a infraestrutura
+### Subindo a infraestrutura
 
 Na raiz do projeto, execute:
 
 ```text
-docker compose up -d
+docker compose up --build
 ```
 
 Isso irá iniciar os serviços de infraestrutura necessários:
@@ -174,6 +171,9 @@ Isso irá iniciar os serviços de infraestrutura necessários:
 * SQL Server do OrderService
 * SQL Server do InventoryService
 * SQL Server do PaymentService
+* OrderService
+* InventoryService
+* PaymentService
 
 Para verificar se os containers estão executando:
 
@@ -181,32 +181,9 @@ Para verificar se os containers estão executando:
 docker compose ps
 ```
 
-### 2. Executando os microsserviços
+Cada microsserviço será dentro de um container docker.
 
-Abra um terminal para cada microsserviço e execute dotnet run.
-
-OrderService:
-
-```text
-cd OrderService
-dotnet run
-```
-InventoryService:
-
-```text
-cd InventoryService
-dotnet run
-```
-PaymentService:
-
-```text
-cd PaymentService
-dotnet run
-```
-
-Cada microsserviço será executado localmente através do ASP.NET Core.
-
-### 3. Configuração das conexões
+### Configuração das conexões
 
 Como os microsserviços são executados diretamente na máquina, as conexões devem utilizar localhost.
 
@@ -220,15 +197,15 @@ Como os microsserviços são executados diretamente na máquina, as conexões de
 Exemplo de conexão do OrderService:
 
 ```text
-Server=localhost,1434;Database=OrderDb;User Id=sa;Password=sua-senha;TrustServerCertificate=True;Encrypt=False
+Server=order-db,1433;Database=Sales.OrderService;User Id=sa;Password=YourStrong@Password123;Encrypt=False;TrustServerCertificate=True;
 ```
 
 Para o RabbitMQ:
 ```text
-localhost:5672
+rabbitmq:5672
 ```
 
-### 4. RabbitMQ Management
+### RabbitMQ Management
 
 A interface de gerenciamento do RabbitMQ estará disponível em:
 
@@ -239,7 +216,7 @@ Credenciais padrão:
 * Usuário: guest
 * Senha: guest
 
-### 5. Parando a infraestrutura
+### Parando a infraestrutura
 
 Para parar os containers:
 
@@ -248,6 +225,12 @@ docker compose down
 ```
 
 Os dados dos bancos são mantidos nos volumes Docker definidos no docker-compose.yml.
+
+Caso queira apagar e remover os dados:
+
+```text
+docker compose down -v
+```
 
 ---
 
