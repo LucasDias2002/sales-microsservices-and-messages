@@ -5,24 +5,39 @@ using Sales.PaymentService.DTOs;
 
 namespace Sales.PaymentService.Messages
 {
-    public class StockReservatedConsumer: BackgroundService
+    public class StockReservatedConsumer : BackgroundService
     {
         private readonly IRabbitMQConsumer _consumer;
         private readonly IRabbitMQPublisher _publisher;
-        public StockReservatedConsumer(IRabbitMQConsumer consumer, IRabbitMQPublisher publisher)
+        private readonly ILogger<StockReservatedConsumer> _logger;
+
+        public StockReservatedConsumer(
+            IRabbitMQConsumer consumer,
+            IRabbitMQPublisher publisher,
+            ILogger<StockReservatedConsumer> logger)
         {
             _consumer = consumer;
             _publisher = publisher;
-        }   
+            _logger = logger;
+        }
 
         protected override Task ExecuteAsync(CancellationToken stoppingToken)
         {
+            _logger.LogInformation(
+                "Payment Service iniciado. Aguardando eventos de estoque reservado...");
+
             _consumer.ConsumeAsync<InventoryReservedEvent>(
                 exchange: "ecommerceEvents",
                 queue: "payment_stock_reserved_queue",
                 routingKey: "stock.reserved",
                 handler: async (reservationEvent) =>
                 {
+                    _logger.LogInformation(
+                        "Evento de estoque reservado recebido. OrderId: {OrderId}, CustomerId: {CustomerId}, Amount: {Amount}",
+                        reservationEvent.OrderId,
+                        reservationEvent.CustomerId,
+                        reservationEvent.Amount);
+
                     var payment = new PaymentProcessed
                     {
                         OrderId = reservationEvent.OrderId,
@@ -33,25 +48,47 @@ namespace Sales.PaymentService.Messages
 
                     await ProcessPayment(payment);
                 });
+
             return Task.CompletedTask;
         }
+
         private async Task ProcessPayment(PaymentProcessed payment)
         {
-            if (payment.Amount > 0 && payment.Amount < 1000)
+            _logger.LogInformation(
+                "Processando pagamento. OrderId: {OrderId}, Amount: {Amount}",
+                payment.OrderId,
+                payment.Amount);
+
+            var success = payment.Amount > 0 && payment.Amount < 1000;
+
+            if (success)
             {
-                await _publisher.Publish<PaymentProcessedEvent>(new PaymentProcessedEvent
-                {
-                    OrderId = payment.OrderId,
-                    Success = true
-                }, "ecommerceEvents", "payment.processed");
-                return;
+                _logger.LogInformation(
+                    "Pagamento aprovado. OrderId: {OrderId}, Amount: {Amount}",
+                    payment.OrderId,
+                    payment.Amount);
+            }
+            else
+            {
+                _logger.LogWarning(
+                    "Pagamento recusado. OrderId: {OrderId}, Amount: {Amount}",
+                    payment.OrderId,
+                    payment.Amount);
             }
 
-            await _publisher.Publish<PaymentProcessedEvent>(new PaymentProcessedEvent
-            {
-                OrderId = payment.OrderId,
-                Success = false
-            }, "ecommerceEvents", "payment.processed");
+            await _publisher.Publish<PaymentProcessedEvent>(
+                new PaymentProcessedEvent
+                {
+                    OrderId = payment.OrderId,
+                    Success = success
+                },
+                "ecommerceEvents",
+                "payment.processed");
+
+            _logger.LogInformation(
+                "Evento payment.processed publicado. OrderId: {OrderId}, Success: {Success}",
+                payment.OrderId,
+                success);
         }
     }
 }

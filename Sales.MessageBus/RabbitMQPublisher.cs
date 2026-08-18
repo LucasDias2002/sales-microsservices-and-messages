@@ -13,7 +13,7 @@ namespace Sales.MessageBus
         {
             var factory = new ConnectionFactory()
             {
-                HostName = "localhost",
+                HostName = "rabbitmq",
             };
 
             using var connection = await factory.CreateConnectionAsync();
@@ -37,7 +37,7 @@ namespace Sales.MessageBus
         {
             var factory = new ConnectionFactory()
             {
-                HostName = "localhost",
+                HostName = "rabbitmq",
             };
 
             using var connection = await factory.CreateConnectionAsync();

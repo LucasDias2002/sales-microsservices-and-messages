@@ -17,7 +17,7 @@ namespace Sales.MessageBus
         {
             var factory = new ConnectionFactory
             {
-                HostName = "localhost"
+                HostName = "rabbitmq",
             };
 
             var connection = await factory.CreateConnectionAsync();
