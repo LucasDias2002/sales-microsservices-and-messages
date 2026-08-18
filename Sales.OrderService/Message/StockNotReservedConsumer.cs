@@ -34,7 +34,7 @@ namespace Sales.OrderService.Message
                     {
                         Id = notReservedEvent.OrderId,
                         Status = OrderStatus.Cancelled,
-                        CancellationReason = "Sem estoque disponível"
+                        CancellationReason = notReservedEvent.Message
                     };
 
                     var result = await orderService.UpdateStatusAsync(order, order.Status);

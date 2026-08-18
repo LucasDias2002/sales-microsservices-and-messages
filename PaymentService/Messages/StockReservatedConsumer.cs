@@ -37,12 +37,12 @@ namespace Sales.PaymentService.Messages
         }
         private async Task ProcessPayment(PaymentProcessed payment)
         {
-            if (payment.Amount > 0)
+            if (payment.Amount > 0 && payment.Amount < 1000)
             {
                 await _publisher.Publish<PaymentProcessedEvent>(new PaymentProcessedEvent
                 {
                     OrderId = payment.OrderId,
-                    Success = false
+                    Success = true
                 }, "ecommerceEvents", "payment.processed");
                 return;
             }
@@ -50,7 +50,7 @@ namespace Sales.PaymentService.Messages
             await _publisher.Publish<PaymentProcessedEvent>(new PaymentProcessedEvent
             {
                 OrderId = payment.OrderId,
-                Success = true
+                Success = false
             }, "ecommerceEvents", "payment.processed");
         }
     }

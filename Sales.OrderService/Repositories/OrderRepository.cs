@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Sales.OrderService.Context;
+using Sales.OrderService.DTOs;
 using Sales.OrderService.Entities;
 
 namespace Sales.OrderService.Repositories

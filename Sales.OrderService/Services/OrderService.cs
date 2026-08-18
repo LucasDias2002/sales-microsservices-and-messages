@@ -41,6 +41,12 @@ namespace Sales.OrderService.Services
             return _mapper.Map<OrderDTO>(createdOrder);
         }
 
+        public async Task<OrderDTO?> GetOrderByIdAsync(Guid id)
+        {
+            var orderEntity = await _orderRepository.GetOrderByIdAsync(id);
+            return _mapper.Map<OrderDTO>(orderEntity);
+        }
+
         public async Task<List<OrderDTO>> GetOrdersAsync()
         {
             var orders = await _orderRepository.GetOrdersAsync();

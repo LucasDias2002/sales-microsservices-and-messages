@@ -27,5 +27,13 @@ namespace Sales.OrderService.Controllers
             var createdOrder = await _orderService.GetOrdersAsync();
             return Ok(createdOrder);
         }
+        [HttpGet("{id:guid}")]
+        public async Task<IActionResult> GetOrderById(Guid id)
+        {
+            var createdOrder = await _orderService.GetOrderByIdAsync(id);
+            if (createdOrder == null)
+                return NotFound();
+            return Ok(createdOrder);
+        }
     }
 }
