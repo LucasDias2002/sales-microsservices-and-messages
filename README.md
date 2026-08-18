@@ -162,10 +162,10 @@ docker compose up -d
 
 Isso irá iniciar os serviços de infraestrutura necessários:
 
-RabbitMQ
-SQL Server do OrderService
-SQL Server do InventoryService
-SQL Server do PaymentService
+* RabbitMQ
+* SQL Server do OrderService
+* SQL Server do InventoryService
+* SQL Server do PaymentService
 
 Para verificar se os containers estão executando:
 
@@ -228,8 +228,8 @@ http://localhost:15672
 
 Credenciais padrão:
 
-Usuário: guest
-Senha: guest
+* Usuário: guest
+* Senha: guest
 
 ### 5. Parando a infraestrutura
 
