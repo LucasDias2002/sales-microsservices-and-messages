@@ -1,46 +1,98 @@
-name: sales-platform
+services:
 
-services: 
-    rabbitmq:
-        image: rabbitmq:3-management
-        container_name: rabbitmq
-        ports:
-            - "5672:5672"
-            - "15672:15672"
+  # =========================
+  # RABBITMQ
+  # =========================
 
-    sqlserver-1:
-      image: mcr.microsoft.com/mssql/server:2025-latest
-      container_name: order-db
-      environment:
-        SA_PASSWORD: "sua-senha"
-        ACCEPT_EULA: "Y"
-      ports:
-        - "1434:1433"
-      volumes:
-        - order_data:/var/opt/mssql
+  rabbitmq:
+    image: rabbitmq:4-management
+    container_name: sales-rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - sales-network
 
-    sqlserver-2:
-      image: mcr.microsoft.com/mssql/server:2025-latest
-      container_name: inventory-db
-      environment:
-        SA_PASSWORD: "sua-senha"
-        ACCEPT_EULA: "Y"
-      ports:
-        - "1435:1433"
-      volumes:
-        - inventory_data:/var/opt/mssql
+  # =========================
+  # DATABASES
+  # =========================
 
-    sqlserver-3:
-      image: mcr.microsoft.com/mssql/server:2025-latest
-      container_name: payment-db
-      environment:
-        SA_PASSWORD: "sua-senha"
-        ACCEPT_EULA: "Y"
-      ports:
-        - "1436:1433"
-      volumes:
-        - payment_data:/var/opt/mssql
-volumes:
-  order_data:
-  inventory_data:
-  payment_data:
+  order-db:
+    image: mcr.microsoft.com/mssql/server:2025-latest
+    container_name: sales-order-db
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: "YourStrong@Password123"
+    ports:
+      - "1433:1433"
+    networks:
+      - sales-network
+
+  inventory-db:
+    image: mcr.microsoft.com/mssql/server:2025-latest
+    container_name: sales-inventory-db
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: "YourStrong@Password123"
+    ports:
+      - "1434:1433"
+    networks:
+      - sales-network
+
+  # payment-db:
+  #   image: mcr.microsoft.com/mssql/server:2025-latest
+  #   container_name: sales-payment-db
+  #   environment:
+  #     ACCEPT_EULA: "Y"
+  #     MSSQL_SA_PASSWORD: "YourStrong@Password123"
+  #   ports:
+  #     - "1435:1433"
+  #   networks:
+  #     - sales-network
+
+  # =========================
+  # SERVICES
+  # =========================
+
+  order:
+    build:
+      context: .
+      dockerfile: Sales.OrderService/Dockerfile
+    container_name: sales-order
+    ports:
+      - "5001:8080"
+    depends_on:
+      - order-db
+      - rabbitmq
+    networks:
+      - sales-network
+
+  inventory:
+    build:
+      context: .
+      dockerfile: Sales.InventoryService/Dockerfile
+    container_name: sales-inventory
+    ports:
+      - "5002:8080"
+    depends_on:
+      - inventory-db
+      - rabbitmq
+    networks:
+      - sales-network
+
+  payment:
+    build:
+      context: .
+      dockerfile: PaymentService/Dockerfile
+    container_name: sales-payment
+    ports:
+      - "5003:8080"
+    depends_on:
+      # - payment-db
+      - rabbitmq
+    networks:
+      - sales-network
+
+networks:
+  sales-network:
+    driver: bridge
