@@ -92,6 +92,10 @@ Order Service
 
 Cada etapa da Saga é desencadeada pelo evento gerado pela etapa anterior.
 
+### As trocas de mensagens estão mapeadas abaixo:
+
+![Messages](Docs/images/comunicacao-messages.png)
+
 ### Características
 
 * Comunicação assíncrona através do RabbitMQ
